@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.jatin.taskforge",
+      "sha256_cert_fingerprints": [
+        "3D:3F:23:49:2A:79:36:C2:AE:B2:E0:8C:FC:7F:97:CA:F4:63:21:89:D4:F2:FA:B2:46:8D:6C:9B:4F:CB:B2:88"
+      ]
+    }
+  }
+]
