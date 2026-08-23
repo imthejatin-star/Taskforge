@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
-        android:allowBackup="true"
+    android:allowBackup="true"
+    android:icon="@drawable/forge_icon_large"
+    android:roundIcon="@drawable/forge_icon_large"
         android:label="TaskForge"
         android:theme="@style/Theme.TaskForge"
         android:usesCleartextTraffic="true">
