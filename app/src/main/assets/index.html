@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <link rel="manifest" href="./manifest.json">
-<title>TaskForge V2</title>
+<title>TaskForge</title>
 
 <style>
 :root{
@@ -1738,7 +1738,7 @@ onclick="event.stopPropagation(); editTask('${task.id}'); closeTaskMenus();">
 
 <button
 class="taskMenuItem delete"
-onclick="event.stopPropagation(); deleteTask('${task.id}'); closeTaskMenus();">
+onclick="deleteTaskFromMenu('${task.id}')">
 
 🗑️ Delete
 
@@ -2065,7 +2065,15 @@ render();
 showToast("Task deleted");
 
 }
+function deleteTaskFromMenu(id){
 
+closeTaskMenus();
+
+setTimeout(()=>{
+    deleteTask(id);
+},50);
+
+                        }
 function toggleRepeat(){
 
 repeatDaily=!repeatDaily;
