@@ -406,11 +406,100 @@ button:active{
 }
 
 .taskMenu{
+    position:relative;
+    flex-shrink:0;
+}
+
+.taskMenuButton{
+    width:34px;
+    height:34px;
+    display:grid;
+    place-items:center;
+    border-radius:10px;
+    background:rgba(255,255,255,.045);
+    color:var(--muted);
+    font-size:19px;
+    line-height:1;
+}
+
+.taskMenuButton:active{
+    transform:scale(.9);
+}
+
+.taskMenuDropdown{
+    position:absolute;
+    right:0;
+    top:40px;
+    z-index:30;
+    min-width:125px;
+    padding:6px;
+    border-radius:13px;
+    background:#1a202d;
+    border:1px solid rgba(255,255,255,.1);
+    box-shadow:0 15px 40px rgba(0,0,0,.45);
+    display:none;
+}
+
+.taskMenuDropdown.show{
+    display:block;
+    animation:menuIn .15s ease;
+}
+
+@keyframes menuIn{
+    from{
+        opacity:0;
+        transform:translateY(-5px) scale(.97);
+    }
+    to{
+        opacity:1;
+        transform:none;
+    }
+}
+
+.taskMenuItem{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:9px;
+    padding:10px;
+    border-radius:9px;
+    background:transparent;
+    text-align:left;
+    font-size:11px;
+}
+
+.taskMenuItem:hover{
+    background:rgba(255,255,255,.06);
+}
+
+.taskMenuItem.edit{
+    color:var(--accent2);
+}
+
+.taskMenuItem.delete{
+    color:var(--red);
+}
+
+.taskAction{
     width:32px;
     height:32px;
+    display:grid;
+    place-items:center;
     border-radius:10px;
-    background:rgba(255,255,255,.04);
-    color:var(--muted);
+    background:rgba(255,255,255,.045);
+    font-size:13px;
+}
+
+.taskAction.edit{
+    color:var(--accent2);
+}
+
+.taskAction.delete{
+    color:var(--red);
+}
+
+.taskAction:active{
+    transform:scale(.9);
 }
 
 /* EMPTY */
@@ -1576,6 +1665,7 @@ return (a.time||"99:99")
 
 }
 
+
 function taskHTML(task){
 
 return `
@@ -1584,17 +1674,20 @@ return `
 
 <button
 class="taskCheck ${task.completed?"done":""}"
-onclick="toggleTask('${task.id}')">
+onclick="event.stopPropagation(); toggleTask('${task.id}')">
 
 ${task.completed?"✓":""}
 
 </button>
 
-<div class="taskBody"
+<div class="taskBody">
+
+<div
+class="taskTitle"
 onclick="editTask('${task.id}')">
 
-<div class="taskTitle">
 ${escapeHTML(task.title)}
+
 </div>
 
 <div class="taskDetails">
@@ -1621,13 +1714,39 @@ ${task.repeat?`
 
 </div>
 
+<div class="taskMenu">
+
 <button
-class="taskMenu"
-onclick="deleteTask('${task.id}')">
+class="taskMenuButton"
+onclick="toggleTaskMenu(event,'${task.id}')">
 
 ⋮
 
 </button>
+
+<div
+class="taskMenuDropdown"
+id="taskMenu-${task.id}">
+
+<button
+class="taskMenuItem edit"
+onclick="event.stopPropagation(); editTask('${task.id}'); closeTaskMenus();">
+
+✏️ Edit
+
+</button>
+
+<button
+class="taskMenuItem delete"
+onclick="event.stopPropagation(); deleteTask('${task.id}'); closeTaskMenus();">
+
+🗑️ Delete
+
+</button>
+
+</div>
+
+</div>
 
 </div>
 
@@ -2454,6 +2573,36 @@ return `
 `;
 
 }
+function toggleTaskMenu(event,id){
+
+event.stopPropagation();
+
+const menu =
+document.getElementById("taskMenu-"+id);
+
+if(!menu) return;
+
+const wasOpen =
+menu.classList.contains("show");
+
+closeTaskMenus();
+
+if(!wasOpen){
+    menu.classList.add("show");
+}
+
+}
+
+function closeTaskMenus(){
+
+document
+.querySelectorAll(".taskMenuDropdown")
+.forEach(menu=>{
+    menu.classList.remove("show");
+});
+
+}
+
 
 document.getElementById("dailyGoal").value=
 state.dailyGoal;
@@ -2492,6 +2641,11 @@ e.target.id==="taskInput"
 saveTask();
 
 }
+
+});
+document.addEventListener("click",()=>{
+
+closeTaskMenus();
 
 });
 
